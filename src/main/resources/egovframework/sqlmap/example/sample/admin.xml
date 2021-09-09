@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Sample">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="searchVO" type="egovframework.example.sample.service.SampleDefaultVO"/>
+
+	<select id="checkAdminLogin" resultClass="EgovMap">
+	        <![CDATA[
+	            SELECT *
+	            FROM loginAdmin
+	            where id = #idQuery# and pw = #pwQuery#
+	        ]]>
+	</select>
+	<insert id="insertFaq">
+		<![CDATA[
+			INSERT INTO faqadmin
+				( title
+				  , ftext
+				  , fdate
+				)
+			VALUES ( #titleQuery#
+				  , #textQuery#
+				  , now())
+		]]>
+	</insert>
+	<insert id="insertPortfolio">
+		<![CDATA[
+			INSERT INTO portfolioadmin
+				( title
+				  , stext
+				  , dtext
+				  , pdate)
+			VALUES ( #title#
+				  , #stext#
+				  , #dtext#
+				  , now())
+		]]>
+	</insert>
+	<insert id="insertPortfolioFiles">
+		<![CDATA[
+			INSERT INTO files
+				( midx
+				  , originNm
+				  , saveNm
+				 )
+			VALUES ( #midx#
+				  , #originNm#
+				  , #saveNm#
+				 	)
+		]]>
+	</insert>
+	<select id="selectFaqList" resultClass="EgovMap">
+        <![CDATA[
+            SELECT *
+            FROM faqadmin
+            limit #first# , #record#
+        ]]>
+	</select>
+	<select id="selectFaqListCnt" resultClass="int">
+        <![CDATA[
+            SELECT count(*)
+            FROM faqadmin
+        ]]>
+	</select>
+	<select id="selectFaqDetail" resultClass="EgovMap">
+        <![CDATA[
+            SELECT *
+            FROM faqadmin
+            WHERE idx=#idx#
+        ]]>
+	</select>
+	<update id="updateFaq">
+		<![CDATA[
+			UPDATE faqadmin
+			SET title=#titleQuery#
+				, ftext=#textQuery#
+			WHERE idx=#idxQuery#
+		]]>
+	</update>
+	
+	<delete id="deleteFaq">
+			<![CDATA[
+				DELETE FROM faqadmin
+				WHERE idx=#idx#
+			]]>
+	</delete>
+	<select id="selectContactList" resultClass="EgovMap">
+        <![CDATA[
+            SELECT *
+            FROM contactuser
+			limit #first# , #record#          
+        ]]>
+	</select>
+	<select id="selectContactListCnt" resultClass="int">
+        <![CDATA[
+            SELECT count(*)
+            FROM contactuser
+        ]]>
+	</select>
+	<select id="selectContactDetail" resultClass="EgovMap">
+        <![CDATA[
+            SELECT *
+            FROM contactuser
+            WHERE idx = #idx#
+        ]]>
+	</select>
+	
+	<delete id="deletecontact">
+			<![CDATA[
+				DELETE FROM contactuser
+				WHERE idx=#idx#
+			]]>
+	</delete>
+	<select id="selectportfolioDetail" resultClass="EgovMap">
+        <![CDATA[
+            SELECT *
+            FROM portfolioadmin
+            WHERE idx = #idx#
+        ]]>
+	</select>
+	
+	<delete id="deletePortfolio">
+			<![CDATA[
+				DELETE FROM portfolioadmin
+				WHERE idx=#idx#
+			]]>
+	</delete>
+	<select id="selectPortfolioView" resultClass="EgovMap">
+        <![CDATA[
+            SELECT *
+            FROM portfolioadmin
+            limit #first#,#record#
+        ]]>
+	</select>
+	<select id="selectPortfolioCnt" resultClass="int">
+        <![CDATA[
+            SELECT count(*)
+            FROM portfolioadmin
+        ]]>
+	</select>
+	<update id="updatePortfolio">
+		<![CDATA[
+			UPDATE portfolioadmin
+			SET title=#title#
+				, stext=#stext#
+				, dtext=#dtext#
+				, stext=#stext#
+			WHERE idx=#idx#
+		]]>
+	</update>
+	
+</sqlMap>
