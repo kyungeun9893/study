@@ -146,7 +146,6 @@
 			SET title=#title#
 				, stext=#stext#
 				, dtext=#dtext#
-				, stext=#stext#
 			WHERE idx=#idx#
 		]]>
 	</update>

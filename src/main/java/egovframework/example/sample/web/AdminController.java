@@ -1,9 +1,7 @@
 package egovframework.example.sample.web;
 
-import java.io.File;
 import java.util.List;
 import java.util.Properties;
-import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -12,7 +10,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import egovframework.example.sample.service.impl.SampleDAO;
@@ -110,7 +107,7 @@ public class AdminController {
 		in.put("titleQuery", titleCon);
 		in.put("textQuery", textCon);
 		sampleDAO.update("updateFaq",in);
-		return"redirect:faqDetail.do?idx="+idxCon;
+		return"redirect:faqUpdate.do?idx="+idxCon;
 	}
 	@RequestMapping("/faqDelete.do")
 	public String faqDeleteProcess(HttpServletRequest request){
@@ -129,16 +126,11 @@ public class AdminController {
 		return"redirect:faqView.do";
 	}
 	@RequestMapping("/portfolio.do")
-	public String portfolio(HttpServletRequest request){
-		String sdate = request.getParameter("sdate");
-		String edate = request.getParameter("edate");
-		EgovMap in = new EgovMap();
-		in.put("sdate", sdate);
-		in.put("edate", edate);
+	public String portfolio(){
 		return"admin/portfolio";
 	}
 	@RequestMapping("/portfolioProcess.do")
-	public String portfolioProcess(MultipartHttpServletRequest request , Model model){
+	public String portfolioProcess(HttpServletRequest request , Model model){
 		String title = request.getParameter("title");
 		String stext = request.getParameter("stext");
 		String dtext = request.getParameter("dtext");
@@ -146,30 +138,7 @@ public class AdminController {
 		in.put("title", title);
 		in.put("dtext", dtext);
 		in.put("stext", stext);
-		int midx = (int)sampleDAO.insert("insertPortfolio",in);
-		List<MultipartFile> files = request.getFiles("portfolio");
-		if(files.size()>0){
-			in.put("midx", midx);
-			String path = fileProperties.getProperty("file.photo.upload");
-			File file = new File(path);
-			if(!file.exists()){ 
-				file.mkdirs(); 
-			}
-			for(int i=0; i<files.size(); i++){
-				if(!files.get(i).isEmpty()){
-					String originNm = files.get(i).getOriginalFilename();
-					String saveNm = UUID.randomUUID().toString().replaceAll("-", "") + originNm.substring(originNm.lastIndexOf(".")); // 저장이름 = 고유한이름
-					try {
-						files.get(i).transferTo(new File(path+saveNm));
-						in.put("originNm", originNm);
-						in.put("saveNm", saveNm);
-						sampleDAO.insert("insertPortfolioFiles",in);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
+		sampleDAO.insert("insertPortfolio",in);
 		return"redirect:portfolio.do";
 	}
 	@RequestMapping("/contact.do")
@@ -238,50 +207,24 @@ public class AdminController {
 		return"redirect:portfolioView.do";
 	}
 	@RequestMapping("/portfolioUpdate.do")
-	public String portfolioUpdate(HttpServletRequest request){
-		String sdate = request.getParameter("sdate");
-		String edate = request.getParameter("edate");
-		EgovMap in = new EgovMap();
-		in.put("sdate", sdate);
-		in.put("edate", edate);
+	public String portfolioUpdate(HttpServletRequest request , Model model){
+		String idx = request.getParameter("idx");
+		model.addAttribute("portfolioDetail" , sampleDAO.select("selectportfolioDetail" , idx ));
 		return"admin/portfolioUpdate";
 	}
 	@RequestMapping("/portfolioUpdateProcess.do")
-	public String portfolioUpdateProcess(MultipartHttpServletRequest request , Model model){
-		String title = request.getParameter("title");
-		String idx = request.getParameter("idx");
-		String stext = request.getParameter("stext");
-		String dtext = request.getParameter("dtext");
+	public String portfolioUpdateProcess(HttpServletRequest request , Model model){
+		String idxCon = request.getParameter("idx");
+		String titleCon = request.getParameter("title");
+		String stextCon = request.getParameter("stext");
+		String dtextCon = request.getParameter("dtext");
 		EgovMap in = new EgovMap();
-		in.put("title", title);
-		in.put("idx", idx);
-		in.put("dtext", dtext);
-		in.put("stext", stext);
-		int midx = (int)sampleDAO.update("updatePortfolio",in);
-		List<MultipartFile> files = request.getFiles("portfolio");
-		if(files.size()>0){
-			in.put("midx", midx);
-			String path = fileProperties.getProperty("file.photo.upload");
-			File file = new File(path);
-			if(!file.exists()){ 
-				file.mkdirs(); 
-			}
-			for(int i=0; i<files.size(); i++){
-				if(!files.get(i).isEmpty()){
-					String originNm = files.get(i).getOriginalFilename();
-					String saveNm = UUID.randomUUID().toString().replaceAll("-", "") + originNm.substring(originNm.lastIndexOf(".")); // 저장이름 = 고유한이름
-					try {
-						files.get(i).transferTo(new File(path+saveNm));
-						in.put("originNm", originNm);
-						in.put("saveNm", saveNm);
-						sampleDAO.update("updatePortfolioFiles",in);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-		return"redirect:portfolio.do";
+		in.put("title", titleCon);
+		in.put("idx", idxCon);
+		in.put("dtext", dtextCon);
+		in.put("stext", stextCon);
+		sampleDAO.update("updatePortfolio",in);
+		return"redirect:portfolioUpdate.do?idx="+idxCon;
 	}
 	
 }
